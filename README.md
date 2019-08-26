@@ -451,12 +451,16 @@ if __name__ == '__main__':
 
 ```
 
-##### 4. Conclusion
+##### 4. Installation
+
+The code is available at <git@github.com:josh73/migrate-host-reservations-to-kea-mysql.git>. Clone the repository and edit the file db.yaml to update the host address of your MySQL server and the password to the kea user on the kea database.
+
+##### 5. Conclusion
 
 I was able to use this Python code to convert my old isc-dhcp-server host reservation database to Kea with a MySQL back-end. The next step is to add IPv6 support. I will be happy to publish follow-on tutorials on these topics if there is an interest.
 
 
-##### 5. References
+##### 6. References
 
 1.  https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol) 
 2.  https://en.wikipedia.org/wiki/Comparison_of_DHCP_server_software) 
@@ -467,4 +471,5 @@ I was able to use this Python code to convert my old isc-dhcp-server host reserv
 7.  https://oldkea.isc.org/wiki/HostReservationsHowTo
 8.  https://gitlab.isc.org/isc-projects/kea/wikis/docs/editing-host-reservations
 9.  http://www.lillyrnd.com/index.php/kea-dhcp-server/
+10. <git@github.com:josh73/migrate-host-reservations-to-kea-mysql.git>
 
