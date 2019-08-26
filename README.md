@@ -181,6 +181,7 @@ The `hosts` table has the following columns:
 | user_context          | text             | YES  |     | NULL    |                |
 
 For this tutorial we only care about the following columns:
+
 |column                 | Description                                                          |
 |-----------------------|----------------------------------------------------------------------|
 |`host_id`              | An auto-generated integer used as a unique index to the host         |
@@ -210,6 +211,7 @@ The `options` table has the following columns:
 | user_context      | text                | YES  |     | NULL    |                |
 
 For our application we only care about the following columns:
+
 |column                 | Description                                                          |
 |-----------------------|----------------------------------------------------------------------|
 |`option_id`            | An auto-generated integer used as a unique index to the option       |
