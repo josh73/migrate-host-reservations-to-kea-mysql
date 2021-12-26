@@ -6,7 +6,7 @@
 # https://gitlab.isc.org/isc-projects/kea/wikis/docs/editing-host-reservations
 # http://www.lillyrnd.com/index.php/kea-dhcp-server/
 
-import requests, re, csv, yaml, os, sys
+import requests, re, csv, yaml, os, sys, time
 import mysql.connector
 import ipaddress
 
@@ -27,7 +27,7 @@ class kea_db:
   # ===========================================================================
     if type(i) == str:
       i = int(i, 16)
-    s = hex(i).strip('0x').zfill(12)
+    s = hex(i).replace('0x', '').zfill(12)
     s = re.sub(r'(..)(?=[^$])', r'\1:', s)
     return s
 
@@ -153,8 +153,32 @@ class kea_db:
             ON hosts.host_id=dhcp4_options.host_id;"""
     self.mycursor.execute(sql)
     for host_id, mac, addr, hostname, code, value, space, scope_id in self.mycursor:
+        value = str(value)
+        l = (len(value) + 7) & ~7    # round length up to a multiple of 8
+        value = value.zfill(l)
         value_list = re.findall(r'(........)', value) if value else []
         print(f"{host_id:<7} {self.int2mac(mac):<20} {self.int2ip(addr):<10} {code:>5} {space:>5} {scope_id:>5}   {hostname:<15}", *self.hex_2ip_list(value_list))
+  # ===========================================================================
+  def print_lease_database(self):
+  # ===========================================================================
+    sql = """SELECT address,
+                    hex(hwaddr),
+                    hostname,
+                    valid_lifetime,
+                    unix_timestamp(expire),
+                    state
+        FROM lease4;"""
+    self.mycursor.execute(sql)
+    print(f"{'mac':<20} {'IP':<10} {'lifetime':>10} {'expire':<20} {'state':>5}   {'hostname':<15}")
+    for addr, mac, hostname, lifetime, expire, state in self.mycursor:
+        print(f'{self.int2mac(mac):<20} {self.int2ip(addr):<10} {lifetime:>10} {time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(expire)):<20} {state:>5d}   {hostname:<15}')
+
+  # ===========================================================================
+  def get_dns_info(self):
+  # ===========================================================================
+    sql = "SELECT hostname, ipv4_address FROM hosts"
+    self.mycursor.execute(sql)
+    return [(name, self.int2ip(addr)) for name, addr in self.mycursor]
 
   # ===========================================================================
   def open_database(self):
